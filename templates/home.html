@@ -108,7 +108,7 @@
 
     <script>
         // Fetch products from the API
-        fetch('https://wassimdridi.pythonanywhere.com/magasin/api/produits')
+        fetch('http://127.0.0.1:8000/magasin/api/produits')
           .then(response => response.json())
           .then(data => {
             // Loop through the products and create cards for each
