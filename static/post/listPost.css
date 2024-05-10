@@ -1,0 +1,13 @@
+.post-card {
+    border: 1px solid #493838;
+    border-radius: 5px;
+    padding: 10px;
+    margin-bottom: 20px;
+}
+.post-card img {
+    max-width: 100%;
+    height: auto;
+}
+#btnbloc .btn{
+    width: 150px;
+}

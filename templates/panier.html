@@ -1,0 +1,117 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Panier{% endblock title %}
+{% block styles %}
+<style>
+    .page-wrapper {
+        margin-top: 20px;
+    }
+
+    .table {
+        width: 100%;
+    }
+
+    .img {
+        max-width: 100%;
+        height: auto;
+    }
+
+    .quantity-container {
+        display: flex;
+        align-items: center;
+    }
+
+    .quantity-btn {
+        margin: 0 5px;
+    }
+
+    .total-price {
+        margin-top: 20px;
+    }
+
+    .actions {
+        display: flex;
+        justify-content: space-between;
+        margin-top: 20px;
+    }
+
+    .actions form {
+        display: inline;
+    }
+</style>
+{% endblock styles %}
+{% block content %}
+<div class="container page-wrapper">
+    <div class="page-inner">
+        {% if produits %}
+        <h2>Shopping Cart</h2>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Image</th>
+                    <th>QUANTITY</th>
+                    <th>Product</th>
+                    <th>Price</th>
+                    <th>Remove</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for produit in produits %}
+                <tr>
+                    <td><img class="img" src="{{ produit.produit.img.url }}" style="height: 100px; width: 100px; border-radius: 50%;" alt="{{ produit.libelle }}"></td>
+                    <td class="quantity-container">
+                        <form method="post" action="MoisQntProduit">
+                            {% csrf_token %}
+                            <input type="hidden" name="produit_id" value="{{ produit.produit.id }}">
+                            <button type="submit" class="btn btn-success btn-sm quantity-btn" style="height: 30px; width: 30px; border-radius: 50%;">-</button>
+                        </form>
+                        {{ produit.qnt }}
+                        <form method="post" action="plusQntProduit">
+                            {% csrf_token %}
+                            <input type="hidden" name="produit_id" value="{{ produit.produit.id }}">
+                            <button type="submit" class="btn btn-success btn-sm quantity-btn" style="height: 30px; width: 30px; border-radius: 50%;">+</button>
+                        </form>
+                    </td>
+                    <td>{{ produit.produit.libelle }}</td>
+                    <td>{{ produit.produit.prix }} DT</td>
+                    <td>
+                        <form method="post" action="RemoveProduit">
+                            {% csrf_token %}
+                            <input type="hidden" name="produit_id" value="{{ produit.produit.id }}">
+                            <button type="submit" class="btn btn-danger btn-sm">Remove</button>
+                        </form>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <div class="total-price">
+            <p>Total: {{ total_price }} DT</p>
+        </div>
+        <div class="actions">
+            <form method="post" action="removePanier">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-danger lg">Remove All</button>
+            </form>
+            {% if user.is_authenticated %}
+            <form method="post" action="confirmPanier">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-success lg">Confirm Order</button>
+            </form>
+            {% else %}
+            <form method="post" action="/">
+                {% csrf_token %}
+                <a class="nav-link">
+                    <p>pour passer commande veuillez contacter</p>
+                    <button type="submit">Connexion</button>
+                    </a>
+                </form>
+            {% endif %}
+        </div>
+        {% else %}
+        <h2>Panier Vide</h2> <h4><a href="/magasin">back to magasin</a> </h4>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

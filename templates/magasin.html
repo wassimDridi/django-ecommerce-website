@@ -1,0 +1,53 @@
+{% extends 'base.html' %}
+{% load static %}   
+
+{% block title %} Catalogue de produits {% endblock title %}
+{% block styles %}
+<link rel='stylesheet' type='text/css' media='screen' href="{% static 'magasin/style.css'%}">
+{% endblock styles %}
+{% block nbr %}
+{{panier_count}}
+{% endblock %}
+{% block content %}
+<!-- body -->
+<br><br>
+
+<div class="container page-wrapper" style="background-color: #333; border-radius: 20px;">
+    <div class="page-inner">
+        <div class="row">
+            {% for produit in produits %}
+            <div class="el-wrapper" style="border-radius: 15px;">
+                <div class="box-up">
+                    <img class="img" src="{{ produit.img.url }}" alt="{{ produit.libelle }}">
+                    <div class="img-info">
+                        <div class="info-inner">
+                            <span class="p-name">{{ produit.libelle }}</span>
+                            <span class="p-company">{{ produit.fournisseur }}</span>
+                        </div>
+                        <div class="a-size">Type Produit  : <span class="size">{{ produit.type }} -> quantite {{ produit.quantite_en_stock }}</span></div>
+                    </div>
+                </div>
+
+                <div class="box-down">
+                    <div class="h-bg">
+                        <div class="h-bg-inner"></div>
+                    </div>
+
+                    <a class="cart" style="border-radius: 10px;">
+                        <span class="price">${{ produit.prix }}</span>
+                        <span class="add-to-cart">
+                            <form method="post" action="ajouterPanier">
+                                {% csrf_token %}
+                                <input type="hidden" name="produit_id" value="{{ produit.id }}">
+                                <button type="submit" style="background-color: rgb(139, 139, 139);">Add in cart</button>
+                            </form>
+                        </span>
+                    </a>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+<br><br>
+{% endblock %}

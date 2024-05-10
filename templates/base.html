@@ -1,0 +1,232 @@
+{% load static %}   
+
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset='utf-8'>
+	<meta http-equiv='X-UA-Compatible' content='IE=edge'>
+	<title>
+		{% block title %} {% endblock %}
+	</title>
+<!-- 	<link rel='stylesheet' type='text/css' media='screen' href="{% static 'css/base.css'%}">
+ -->		<!-- CSS de Bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    
+	<!-- Votre fichier CSS personnalisé -->
+    
+    <style>
+      .nav-link {
+        position: relative;
+        display: inline-block;
+    }
+
+    #nbP {
+        position: absolute;
+        top: 5px; /* Adjust the top position as needed */
+        right: 5px; /* Adjust the right position as needed */
+        background-color: red; /* Background color of the number */
+        color: white; /* Text color of the number */
+        padding: 5px; /* Padding around the number */
+        border-radius: 50%; /* Make it round */
+    }
+
+    svg {
+        height: 50px;
+        width: 50px;
+    }
+    </style>
+	{% block styles %} {% endblock %}
+</head>
+<body>	
+  <nav class="navbar navbar-expand-lg  border-bottom border-body bg-dark" data-bs-theme="dark">
+    <div class="container-fluid">
+      <a class="navbar-brand" href="/">
+        <img src="{% static 'images/LOGO.png' %}" height="40"  alt="logo Image" style="border-radius: 50%;" />
+
+        DRIDI STORE</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+          <li class="nav-item">
+            <a class="nav-link active" aria-current="page" href="/magasin/">Magasin</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link active" aria-current="page" href="/blog/">Posts</a>
+          </li>
+          {% if user.is_authenticated %}
+          {% if user.is_staff %}
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+              gestion ..
+            </a>
+            <ul class="dropdown-menu">
+              <li><a class="dropdown-item" href="/magasin/AjouterFournisseur">gestion  Fournisseur</a></li>
+              <li><a class="dropdown-item" href="/magasin/listProduit">gestion  Produit</a></li>
+              <li><hr class="dropdown-divider"></li>
+              <li><a class="dropdown-item" href=""></a></li>
+            </ul>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link " href="/admin/" aria-disabled="true">adminstration</a>
+          </li>
+          {% endif %}
+          {% endif %}
+        </ul>
+
+        <ul class="navbar-nav ml-auto">
+          {% if user.is_authenticated %}
+          <li class="nav-item active">
+          <a class="nav-link" href="#">{{user}},</a>
+          </li>
+         <!-- <a class="nav-link" href="http://127.0.0.1:8000/logout/">Déconnexion</a> -->
+         <form action=" {% url 'logout' %}" method="post">
+          {% csrf_token %}
+          <a class="nav-link">
+          <button type="submit">Déconnexion</button>
+          </a></form>
+          {% else %}
+          <li class="nav-item active">
+          </li>
+
+          <form action="/" method="post">
+            {% csrf_token %}
+            <a class="nav-link">
+            <button type="submit">Connexion</button>
+            </a></form>
+
+          <li class="nav-item active">
+          <a class="nav-link" href="/magasin/register/">Inscription</a>
+          </li>
+          {% endif %}
+
+          <li class="nav-item active">
+            <a class="nav-link" href="/magasin/panier">
+              <span id="nbP">{% block nbr %} {% endblock %}</span>
+              <svg style="height: 50px; width: 50px;" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><path d="M528.1 301.3l47.3-208C578.8 78.3 567.4 64 552 64H159.2l-9.2-44.8C147.8 8 137.9 0 126.5 0H24C10.7 0 0 10.7 0 24v16c0 13.3 10.7 24 24 24h69.9l70.2 343.4C147.3 417.1 136 435.2 136 456c0 30.9 25.1 56 56 56s56-25.1 56-56c0-15.7-6.4-29.8-16.8-40h209.6C430.4 426.2 424 440.3 424 456c0 30.9 25.1 56 56 56s56-25.1 56-56c0-22.2-12.9-41.3-31.6-50.4l5.5-24.3c3.4-15-8-29.3-23.4-29.3H218.1l-6.5-32h293.1c11.2 0 20.9-7.8 23.4-18.7z"/></svg>
+            </a>
+          </li>
+          </ul>
+
+      </div>
+    </div>
+    
+  </nav>
+	{% block content %} {% endblock %}
+
+  <!-- Footer -->
+<footer class="text-center text-lg-start bg-body-tertiary text-muted">
+  <!-- Section: Social media -->
+  <section class="d-flex justify-content-center justify-content-lg-between p-4 border-bottom">
+    <!-- Left -->
+    <div class="me-5 d-none d-lg-block">
+      <span>Follow us on social media:</span>
+    </div>
+    <!-- Left -->
+
+    <!-- Right -->
+    <div>
+      <a href="#" class="me-4 text-reset">
+        <i class="fab fa-facebook-f"></i>
+      </a>
+      <a href="#" class="me-4 text-reset">
+        <i class="fab fa-twitter"></i>
+      </a>
+      <a href="#" class="me-4 text-reset">
+        <i class="fab fa-instagram"></i>
+      </a>
+    </div>
+    <!-- Right -->
+  </section>
+  <!-- Section: Social media -->
+
+  <!-- Section: Links  -->
+  <section class="">
+    <div class="container text-center text-md-start mt-5">
+      <!-- Grid row -->
+      <div class="row mt-3">
+        <!-- Grid column -->
+        <div class="col-md-3 col-lg-4 col-xl-3 mx-auto mb-4">
+          <!-- Content -->
+          <h6 class="text-uppercase fw-bold mb-4">
+            Dridi Store
+          </h6>
+          <p>
+            Welcome to Dridi Store, your premier destination for high-quality products. Explore our wide range of items and enjoy a seamless shopping experience.
+          </p>
+        </div>
+        <!-- Grid column -->
+
+        <!-- Grid column -->
+        <div class="col-md-2 col-lg-2 col-xl-2 mx-auto mb-4">
+          <!-- Links -->
+          <h6 class="text-uppercase fw-bold mb-4">
+            Products
+          </h6>
+          <p>
+            <a href="#!" class="text-reset">Electronics</a>
+          </p>
+          <p>
+            <a href="#!" class="text-reset">Clothing</a>
+          </p>
+          <p>
+            <a href="#!" class="text-reset">Home & Kitchen</a>
+          </p>
+          <p>
+            <a href="#!" class="text-reset">Beauty & Personal Care</a>
+          </p>
+        </div>
+        <!-- Grid column -->
+
+        <!-- Grid column -->
+        <div class="col-md-3 col-lg-2 col-xl-2 mx-auto mb-4">
+          <!-- Links -->
+          <h6 class="text-uppercase fw-bold mb-4">
+            Useful links
+          </h6>
+          <p>
+            <a href="#!" class="text-reset">My Account</a>
+          </p>
+          <p>
+            <a href="#!" class="text-reset">Orders</a>
+          </p>
+          <p>
+            <a href="#!" class="text-reset">Shipping</a>
+          </p>
+          <p>
+            <a href="#!" class="text-reset">Contact Us</a>
+          </p>
+        </div>
+        <!-- Grid column -->
+
+        <!-- Grid column -->
+        <div class="col-md-4 col-lg-3 col-xl-3 mx-auto mb-md-0 mb-4">
+          <!-- Links -->
+          <h6 class="text-uppercase fw-bold mb-4">Contact</h6>
+          <p><i class="fas fa-home me-3"></i> New York, NY 10012, US</p>
+          <p>
+            <i class="fas fa-envelope me-3"></i>
+            info@dridistore.com
+          </p>
+          <p><i class="fas fa-phone me-3"></i> +1 234 567 890</p>
+        </div>
+        <!-- Grid column -->
+      </div>
+      <!-- Grid row -->
+    </div>
+  </section>
+  <!-- Section: Links  -->
+
+  <!-- Footer Text -->
+  <div class="text-center p-4" style="background-color: rgba(0, 0, 0, 0.05);">
+    © 2024 Dridi Store. All rights reserved.
+  </div>
+  <!-- Footer Text -->
+</footer>
+<!-- Footer -->
+
+	    <!-- JavaScript de Bootstrap -->
+      <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+</body>
+</html>

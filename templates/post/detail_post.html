@@ -1,0 +1,24 @@
+{% extends "../base.html" %}
+{% block title %}Détails du Post{% endblock title %}
+{% block content %}
+<br><br>
+<div class="container" style="background-color: beige;">
+    <div class="row">
+        <div class="col-md-6">
+            {% if post.image %}
+            <img src="{{ post.image.url }}"  style="border-radius: 30px;"   class="card-img-top" alt="Fissure in Sandstone" />
+            {% endif %}
+        </div>
+        <div class="col-md-6">
+            <h2 class="card-title">{{ post.title }}</h2>
+            <p class="card-text"><strong>Auteur:</strong> {{ post.author }}</p>
+            <p class="card-text"><strong>Mise à jour:</strong> {{ post.updated_on }}</p>
+            <p class="card-text"><strong>Contenu:</strong></p>
+            <p class="card-text">{{ post.content }}</p>
+       
+            <br> <br><br><br><br><br> <br><br><br>
+            <a href="{% url 'liste_posts' %}" class="btn btn-primary">Retour à la liste des posts</a>
+        </div>
+    </div>
+</div>
+{% endblock %}

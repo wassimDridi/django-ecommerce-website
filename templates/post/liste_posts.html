@@ -1,0 +1,50 @@
+{% extends "../base.html" %}
+{% load static %}
+
+{% block title %}Liste des Posts{% endblock title %}
+{% block styles %}
+<link rel="stylesheet" type="text/css" media="screen" href="{% static 'post/listPost.css' %}">
+<style>
+    .post-card {
+        height: 100%; /* Ensure the card takes full height */
+    }
+
+    .post-card .card-img-top {
+        object-fit: cover; /* Ensure the image covers the entire space */
+        height: 200px; /* Set a fixed height for the image */
+    }
+</style>
+{% endblock styles %}
+{% block content %}
+<div class="container">
+    {% if user.is_authenticated %}
+    <h1 class="display-1"><a href="{% url 'creer_post' %}">Créer Post</a></h1>
+    {% endif %}
+    <h1 class="display-1">Liste des Posts</h1>
+    <div class="row">
+        {% for post in posts %}
+        <div class="col-md-4">
+            <div class="card post-card">
+                {% if post.image %}
+                <img class="card-img-top" src="{{ post.image.url }}" alt="Post Image">
+                {% endif %}
+                <div class="card-body">
+                    <h5 class="card-title">{{ post.title }}</h5>
+                    <div class="d-grid gap-2">
+                        <a href="{% url 'detail_post' post.pk %}" class="btn btn-primary">Détails</a>
+                    </div>
+                    {% if user.is_authenticated %}
+                        {% if user.is_staff or post.author == user %}
+                    <div class="btn-group" id="btnbloc">
+                        <a href="{% url 'modifier_post' post.pk %}" class="btn btn-secondary">Modifier</a>
+                        <a href="{% url 'supprimer_post' post.pk %}" class="btn btn-danger">Supprimer</a>
+                    </div>
+                    {% endif %}
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

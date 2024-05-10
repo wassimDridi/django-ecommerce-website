@@ -1,0 +1,87 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Ajouter Fournisseur{% endblock title %}
+{% block styles %}
+<link rel='stylesheet' type='text/css' media='screen' href="{% static 'magasin/form.css'%}">
+{% endblock styles %}
+
+{% block content %}
+
+<br><br><br>
+<div class="row">
+  <div class="col-md-6">
+
+<div class="form1">
+    <div class="container">
+
+        <form method="post" action="AjouterFournisseur">
+          {% csrf_token %}
+          <h4>Ajouter Fournisseur</h4>
+
+          <label for="id_nom">Nom:</label>
+          <input type="text" id="id_nom" name="nom" maxlength="100" required><br>
+          <label for="id_adresse">Adresse:</label>
+          <input type="text" id="id_adresse" name="adresse" maxlength="100" required><br>
+          <label for="id_email">Email:</label>
+          <input type="email" id="id_email" name="email" required><br>
+          <label for="id_telephone">Téléphone:</label>
+          <input type="text" id="id_telephone" name="telephone" maxlength="8" required><br>
+          <button type="submit">Ajouter Fournisseur</button>
+        </form>
+      </div>
+</div>
+</div>
+<div class="col-md-6">
+
+<h1>List Fournisseur</h1>
+
+<form class="d-flex" role="search" method="post" action="searchFournisseur">
+    {% csrf_token %}
+    <input class="form-control me-2" type="search" name="search_query" placeholder="Search" aria-label="Search">
+    <button class="btn btn-outline-success" type="submit">Search</button>
+</form>
+
+<table class="table" style="background-color: beige;">
+    <thead>
+      <tr>
+        <th scope="col">Nom</th>
+        <th scope="col">Adresse</th>
+        <th scope="col">Email</th>
+        <th scope="col">Telephone</th>
+        <td colspan="2">action.</td>
+      </tr>
+    </thead>
+    <tbody class="table-group-divider">
+      {% for fournisseur in fournisseurs %}
+      <tr>
+        <td>{{ fournisseur.nom }}</td>
+        <td>{{ fournisseur.adresse }}</td>
+        <td>{{ fournisseur.email }}</td>
+        <td>{{ fournisseur.telephone }}</td>
+        <td>
+            <form  method="post" action="deleteFournisseur">
+                {% csrf_token %}
+                <input type="hidden" value="{{ fournisseur.id }}" name="id">
+                <button class="btn btn-outline-danger" type="submit">Delete</button>
+            </form>
+        </td>
+        <td>
+            <form  method="post" action="editFournisseur">
+                {% csrf_token %}
+                <input type="hidden" value="{{ fournisseur.id }}" name="id">
+                <button class="btn btn-outline-info" type="submit">Edit</button>
+            </form>
+        </td>
+        
+      </tr>
+      {% empty %}
+      <tr>
+        <td colspan="4">No fournisseurs found.</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+</table>
+</div></div>
+<br><br><br>
+{% endblock %}

@@ -1,0 +1,138 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Ajouter Fournisseur{% endblock title %}
+{% block styles %}
+<!-- <link rel='stylesheet' type='text/css' media='screen' href="{% static 'magasin/form.css'%}">
+ -->
+ {% endblock styles %}
+
+{% block content %}
+
+<h1>Cette page consomme l'API REST deDjango , liste des produits  e display avec fetch de JavaScript</h1>
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home Page</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-KyZXEAg3QhqLMpG8r+Knujsl7/1L_dstPt3HV5HzibVkU0z0MKZ0FeZp4uQzRuKm" crossorigin="anonymous">
+    <style>
+        body {
+            background-color: white;
+            color: black;
+        }
+    
+        #mincard .card:hover {
+            background-color: #f8f9fa;
+            transition: background-color 0.3s ease;
+        }
+    
+        #mincard .card:hover {
+            transform: scale(1.1);
+            transition: transform 0.8s ease;
+        }
+    </style>
+</head>
+<body>
+    <div class="text-center">
+        <h1 class="display-3" style="color:rgb(58, 27, 27);">E-Commerce Hub</h1>
+    </div>
+
+    <br />
+    <hr style="color: rgb(0, 0, 0);" />
+    <br />
+
+    <div class="container">
+        <div class="row">
+            <!-- Image Column -->
+            <div class="col-md-6">
+                <img src="{% static 'images/c1.jpg' %}"  style="border-radius: 30px;"   class="card-img-top" alt="Fissure in Sandstone" />
+            </div>
+            <!-- Text/Button Column -->
+            <div class="col-md-6" style="background-color: transparent; color:rgb(8, 3, 3); border:2px thick rgb(0, 0, 0); border-radius:10px;">
+                <br /><br />
+                <div class="card-body" style="border-radius: 30px; border:4px thick rgb(0, 0, 0);">
+                    <h5 class="card-title">E-Commerce Hub: Say Hello to Your Premier Shopping Experience!</h5>
+                    <p class="card-text">Discover a world of exclusive products and connect with like-minded shoppers. Log in now to explore our offerings or register to join our community.</p>
+                   
+                  </div>
+
+            </div>
+        </div>
+        <br> <hr style="color: rgb(0, 0, 0);"/> <br />
+        <div class="row">
+            <div class="col-md-6" style="background-color: transparent; color:rgb(8, 3, 3); border:2px thick rgb(0, 0, 0); border-radius:10px;">
+                <br /><br />
+                <div class="card-body">
+                    <h5 class="card-title">E-Commerce Hub: Say Hello to Your Premier Shopping Experience!</h5>
+                    <p class="card-text">Discover a world of exclusive products and connect with like-minded shoppers. Log in now to explore our offerings or register to join our community.</p>
+                   
+                  </div>
+
+            </div>
+            <!-- Image Column -->
+            <div class="col-md-6">
+                <img src="{% static 'images/LOGO.png' %}" style="border-radius: 30px;"    class="card-img-top" alt="Fissure in Sandstone" />
+            </div>
+            <!-- Text/Button Column -->
+            
+        </div>
+    </div>
+
+    <br /><hr style="color: rgb(0, 0, 0);"/> <br />
+
+    <div style="border: 4px solid #333; border-radius: 15px;">
+        <div class="card bg-dark text-white">
+            <div>
+                <img src="{% static 'images/c2.jpg' %}" height="600" class="card-img" alt="Club Image" style="border-top-left-radius: 15px; border-top-right-radius: 15px;" />
+
+            </div>
+            <div class="card-img-overlay d-flex flex-column justify-content-between">
+                <div>
+                    <h5 class="card-title">Product Category 1 -- Responsible John Doe</h5>
+                    <p class="card-text">
+                        This is a wider card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.
+                    </p>
+                </div>
+                <p class="card-text">Last updated 3 mins ago</p>
+            </div>
+        </div>
+        <br><br>
+
+        <div class="row mt-3" id="mincard">
+            <!-- Here the products fetched from the API will be dynamically added -->
+        </div>
+    </div>
+
+    <script>
+        // Fetch products from the API
+        fetch('http://127.0.0.1:8000/magasin/api/produits')
+          .then(response => response.json())
+          .then(data => {
+            // Loop through the products and create cards for each
+            data.forEach(product => {
+              const card = document.createElement('div');
+              card.classList.add('col-md-4', 'mb-4');
+              card.innerHTML = `
+                <div class="card">
+                    <img src="${product.img}" class="card-img-top" alt="${product.name}" />
+                  <div class="card-body">
+                    <h5 class="card-title">${product.name}</h5>
+                    <p class="card-text">${product.description}</p>
+                    <p class="card-text">Price: ${product.price}</p>
+                  </div>
+                </div>
+              `;
+              document.getElementById('mincard').appendChild(card);
+            });
+          })
+          .catch(error => {
+            console.error('Error fetching products:', error);
+          });
+    </script>
+</body>
+</html>
+
+{% endblock %}

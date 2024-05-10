@@ -1,0 +1,18 @@
+{% extends "../base.html" %}
+{% load static %}
+
+{% block title %} 
+Supprimer le post : {{ post.title }}
+{% endblock title %}
+{% block styles %}
+<link rel='stylesheet' type='text/css' media='screen' href="{% static 'magasin/form.css'%}">
+{% endblock styles %}
+{% block content %}
+<h1>Êtes-vous sûr de vouloir supprimer le post : {{ post.title }} ?</h1>
+    <form method="post">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-primary btn-lg">Confirmer la suppression</button>
+    </form>
+    <a href="{% url 'liste_posts' %}">Annuler</a>
+    
+{% endblock %}

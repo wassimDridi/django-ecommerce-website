@@ -1,0 +1,108 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Ajouter Fournisseur{% endblock title %}
+{% block styles %}
+<link rel='stylesheet' type='text/css' media='screen' href="{% static 'magasin/form.css'%}">
+{% endblock styles %}
+
+{% block content %}
+
+<br><br><br>
+<div class="row">
+    <div class="col-md-4">
+<div class="form1">
+    <div class="container">
+       <form method="post" enctype="multipart/form-data" action="AjouterProduit">
+    {% csrf_token %}
+    <h4>Ajouter Produit</h4>
+    <label for="id_libelle">Libellé:</label>
+    <input type="text" id="id_libelle" name="libelle" maxlength="100" required><br>
+    <label for="id_description">Description:</label>
+    <input type="text" id="id_description" name="description" maxlength="100" required><br>
+    <label for="id_prix">Prix:</label>
+    <input type="text" id="id_prix" name="prix" required><br>
+
+    <label for="id_fournisseur">Fournisseur:</label>
+    <select id="id_fournisseur" name="fournisseur" required>
+        {% for fournisseur in fournisseurs %}
+            <option value="{{ fournisseur.id }}">{{ fournisseur.nom }}</option>
+        {% endfor %}
+    </select><br>
+    <label for="id_categorie">Catégorie:</label>
+    <select id="id_categorie" name="categorie" required>
+        {% for categorie in categories %}
+            <option value="{{ categorie.id }}">{{ categorie.name }}</option>
+        {% endfor %}
+    </select><br>
+
+    <label for="id_type">Type:</label>
+    <select id="id_type" name="type" required>
+        <option value="em">Emballé</option>
+        <option value="fr">Frais</option>
+        <option value="cs">Conserve</option>
+    </select><br>
+    <label for="id_img">Image:</label>
+    <input type="file" id="id_img" name="img"><br>
+    <!-- Add fields for categorie and fournisseur if needed -->
+     
+    <button type="submit">Ajouter Produit</button>
+</form>
+
+      </div>
+</div>
+</div>
+<div class="col-md-8">
+
+<h1>List Produit</h1>
+
+<form class="d-flex" role="search" method="post" action="searchProduit">
+    {% csrf_token %}
+    <input class="form-control me-2" type="search" name="search_query" placeholder="Search" aria-label="Search">
+    <button class="btn btn-outline-success" type="submit">Search</button>
+</form>
+
+<table class="table">
+    <thead>
+      <tr>
+        <th scope="col">Image</th>
+        <th scope="col">Libellé</th>
+        <th scope="col">Description</th>
+        <th scope="col">Prix</th>
+        <th scope="col">Fournisseur</th>
+        <th scope="col">Catégorie</th>
+        <th scope="col">Type</th>
+        <td colspan="2">action.</td>
+      </tr>
+    </thead>
+    <tbody class="table-group-divider">
+        {% for produit in produits %}
+        <tr>
+          <td><img src="{{ produit.img.url }}" style="width: 50%;" alt="Product Image"></td>
+          <td>{{ produit.libelle }}</td>
+          <td>{{ produit.description }}</td>
+          <td>{{ produit.prix }}</td>
+          <td>{{ produit.fournisseur }}</td>
+          <td>{{ produit.categorie }}</td>
+          <td>{{ produit.get_type_display }}</td>
+          <td>
+            <form  method="post" action="deleteProduit">
+                {% csrf_token %}
+                <input type="hidden" value="{{ produit.id }}" name="id">
+                <button class="btn btn-outline-danger" type="submit">Delete</button>
+            </form>
+        </td>
+        <td>
+            <form  method="post" action="editProduit">
+                {% csrf_token %}
+                <input type="hidden" value="{{ produit.id }}" name="id">
+                <button class="btn btn-outline-info" type="submit">Edit</button>
+            </form>
+        </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+</table>
+</div></div>
+<br><br><br>
+{% endblock %}

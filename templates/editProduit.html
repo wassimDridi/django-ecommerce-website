@@ -1,0 +1,51 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Modifier Produit{% endblock title %}
+{% block styles %}
+<link rel='stylesheet' type='text/css' media='screen' href="{% static 'magasin/form.css'%}">
+{% endblock styles %}
+
+{% block content %}
+
+<br><br><br>
+<div class="form1">
+    <div class="container">
+        <form method="post" enctype="multipart/form-data" action="ProduitEdit">
+            {% csrf_token %}
+            <input type="hidden" value="{{ produit.id }}" name="id">
+            <label for="id_libelle">Libellé:</label>
+            <input type="text" id="id_libelle" name="libelle" value="{{ produit.libelle }}" maxlength="100" required><br>
+            <label for="id_description">Description:</label>
+            <input type="text" id="id_description" name="description" value="{{ produit.description }}" maxlength="100" required><br>
+            <label for="id_prix">Prix:</label>
+            <input type="text" id="id_prix" name="prix" value="{{ produit.prix }}" required><br>
+
+            <label for="id_fournisseur">Fournisseur:</label>
+            <select id="id_fournisseur" name="fournisseur" required>
+                {% for fournisseur in fournisseurs %}
+                    <option value="{{ fournisseur.id }}" {% if fournisseur.id == produit.fournisseur.id %} selected {% endif %}>{{ fournisseur.nom }}</option>
+                {% endfor %}
+            </select><br>
+            <label for="id_categorie">Catégorie:</label>
+            <select id="id_categorie" name="categorie" required>
+                {% for categorie in categories %}
+                    <option value="{{ categorie.id }}" {% if categorie.id == produit.categorie.id %} selected {% endif %}>{{ categorie.name }}</option>
+                {% endfor %}
+            </select><br>
+
+            <label for="id_type">Type:</label>
+            <select id="id_type" name="type" required>
+                <option value="em" {% if produit.type == 'em' %} selected {% endif %}>Emballé</option>
+                <option value="fr" {% if produit.type == 'fr' %} selected {% endif %}>Frais</option>
+                <option value="cs" {% if produit.type == 'cs' %} selected {% endif %}>Conserve</option>
+            </select><br>
+            <label for="id_img">Image:</label>
+            <input type="file" id="id_img" name="img"><br>
+             
+            <button type="submit">Modifier Produit</button>
+        </form>
+    </div>
+</div>
+
+{% endblock %}
