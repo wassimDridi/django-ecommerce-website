@@ -242,7 +242,11 @@ h1 {
                         <h2>OR </h2>
                         <small>
                             Déjà inscrit.e?
-                            <a href="{% url 'login' %}">Se connecter</a>
+                            <form action="/" method="post">
+                                {% csrf_token %}
+                                <a class="nav-link">
+                                <button type="submit">Connexion</button>
+                                </a></form>
                         </small>                       
                     </small>
                     <a href="">FORGOT PASSWORD</a>

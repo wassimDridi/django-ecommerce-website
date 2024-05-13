@@ -1,5 +1,6 @@
 from django.db import models
 from datetime import date
+from django.contrib.auth.models import User
 
 class Fournisseur(models.Model):
     nom = models.CharField(max_length=100)
@@ -49,8 +50,6 @@ class Produit(models.Model):
     categorie = models.ForeignKey(Categorie, on_delete=models.CASCADE, null=True)
     fournisseur = models.ForeignKey(Fournisseur, on_delete=models.CASCADE, null=True)
     
-
-
     def __str__(self):
         return f"{self.libelle} {self.description} {self.prix} {self.type}"
     
@@ -71,14 +70,15 @@ def verifier_quantite_en_stock(sender, instance, **kwargs):
         # Si la nouvelle quantité est égale à 0, supprimez le produit
         instance.produit.delete()
 #------------------------
-
 class Commande(models.Model):
     dateCde = models.DateField(null=True, default=date.today)
     totalCde = models.DecimalField(max_digits=10, decimal_places=3)
     produits = models.ManyToManyField(Produit)
+    user= models.ForeignKey(User, on_delete= models.CASCADE, null=True)
 
     def __str__(self):
         return f"Commande du {self.dateCde} - Total : {self.totalCde} DT"
+    
     
 """ class LigneCommande(models.Model):
     commande = models.ForeignKey(Commande, on_delete=models.CASCADE)

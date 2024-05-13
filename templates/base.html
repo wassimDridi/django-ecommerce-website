@@ -57,6 +57,22 @@
             <a class="nav-link active" aria-current="page" href="/blog/">Posts</a>
           </li>
           {% if user.is_authenticated %}
+          <img src="{% static 'images/compte.png' %}" style="margin-left: 40px; width: 35px; height: 35px; border-radius: 55%;" />
+
+          <li class="nav-item">
+            <a class="nav-link active" aria-current="page" href="/magasin/compte/">
+              compte</a>
+          </li>
+          {% if user.is_staff %}
+          <img src="{% static 'images/stats.png' %}" style="margin-left: 40px; width: 35px; height: 35px; border-radius: 6px;" />
+
+          <li class="nav-item" style="margin-right: 40px;">
+            <a class="nav-link active" aria-current="page" href="/magasin/stats">
+              Statistiques</a>
+          </li>
+          {% endif %}
+          {% endif %}
+          {% if user.is_authenticated %}
           {% if user.is_staff %}
           <li class="nav-item dropdown">
             <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
@@ -115,7 +131,7 @@
     
   </nav>
 	{% block content %} {% endblock %}
-
+<br><br><br>
   <!-- Footer -->
 <footer class="text-center text-lg-start bg-body-tertiary text-muted">
   <!-- Section: Social media -->
@@ -221,7 +237,7 @@
 
   <!-- Footer Text -->
   <div class="text-center p-4" style="background-color: rgba(0, 0, 0, 0.05);">
-    © 2024 Dridi Store. All rights reserved.
+    <a href="mailto:wassimdridi724@gmail.com" style="background-color: rgba(0, 0, 0, 0.05) " class="text-muted">© 2024 Dridi Store. All rights reserved.</a>
   </div>
   <!-- Footer Text -->
 </footer>

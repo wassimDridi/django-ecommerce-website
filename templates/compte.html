@@ -1,0 +1,52 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Modify User Information{% endblock title %}
+
+{% block styles %}
+{% endblock styles %}
+
+{% block content %}
+<br><br><br>
+<center>
+    <h1>bienvenue, {{ user.username }}</h1>
+<hr>
+<h3>Modifier les informations utilisateur</h3>
+<form method="post" style="background-color: beige; width: 50%;">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit" class="btn btn-primary">Save Changes</button>
+</form>
+<br><br>
+<hr>
+
+<h2>Command History:</h2>
+<div class="table-responsive">
+    <table class="table table-striped" style="width: 80%;">
+        <thead>
+            <tr>
+                <th>Total</th>
+                <th>Date</th>
+                <th>Products</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for commande in command_history %}
+            <tr>
+                <td>{{ commande.totalCde }}</td>
+                <td>{{ commande.dateCde }}</td>
+                <td>
+                    <ul>
+                        {% for produit in commande.produits.all %}
+                        <li>{{ produit }}</li>
+                        {% endfor %}
+                    </ul>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+</center>
+<br><br><br>
+{% endblock %}

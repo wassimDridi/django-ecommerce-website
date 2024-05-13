@@ -10,8 +10,17 @@
 {% endblock %}
 {% block content %}
 <!-- body -->
-<br><br>
-
+<br><br> <hr>
+<center>
+<div style="width: 50%; padding: 10px; border-radius: 50px; background-color: rgb(221, 221, 191);">
+    <form class="d-flex" role="search" method="post" action="" style="width: 50%; margin: 20px;">
+        {% csrf_token %}
+        <input class="form-control me-2" type="search" name="search_query" placeholder="Filter produits" aria-label="Search">
+        <button class="btn btn-outline-success" type="submit">Filter</button>
+    </form>
+</div>
+</center> <hr>
+<br>
 <div class="container page-wrapper" style="background-color: #333; border-radius: 20px;">
     <div class="page-inner">
         <div class="row">

@@ -243,8 +243,12 @@ h1 {
                 </form>
                 <div class="register-forget opacity">
                     <small>
-                        Déjà inscrit.e?
-                        <a href="{% url 'login' %}">Se connecter</a>
+                        Déjà inscrit.=>
+                        <form action="/" method="post">
+                            {% csrf_token %}
+                            <a class="nav-link">
+                            <button type="submit">Connexion</button>
+                            </a></form>
                     </small>
                     <a href="">FORGOT PASSWORD</a>
                 </div>

@@ -7,6 +7,8 @@ from django.db.models import Sum
 from datetime import date
 from rest_framework import viewsets
 from decimal import Decimal
+from django.contrib.auth.decorators import login_required
+from .forms import UserUpdateForm
 
 #-----------------------------------------
 from rest_framework.views import APIView
@@ -35,22 +37,7 @@ class ProductViewset(viewsets.ReadOnlyModelViewSet):
         return queryset
 
 #--------------------------------
-""" 
-def register(request):
-    if request.method == 'POST' :
-        form = UserCreationForm(request.POST)
-        if form.is_valid():
-            form.save()
-            username = form.cleaned_data.get('username')
-            password = form.cleaned_data.get('password1')
-            user = authenticate(username=username, password=password)
-            login(request,user)
-            messages.success(request, f'Coucou {username}, Votre compte a été   créé avec succès !')
-            return redirect('home')
-    else :
-        form = UserCreationForm()
-    return render(request,'registration/register.html',{'form' : form})
- """
+
 def register(request):
     if request.method == 'POST' :
         form = UserCreationForm(request.POST)
@@ -70,6 +57,21 @@ def Connexion(request):
 
 def index(request):
     produits = Produit.objects.all()
+    if request.method == 'POST':
+        search_query = request.POST.get('search_query')
+        if search_query:
+            produits = Produit.objects.filter(libelle__icontains=search_query)
+            
+            if not produits.exists():
+                produits = Produit.objects.filter(description__icontains=search_query)
+            
+            if not produits.exists():
+                produits = Produit.objects.filter(prix__icontains=search_query)
+            
+        else:
+            produits = Produit.objects.all()
+    else:
+        produits = Produit.objects.all()
     panier_ids = request.session.get('panier', [])
     panier_count = len(panier_ids)
     return render(request, 'magasin.html', {'produits': produits, 'panier_count': panier_count})
@@ -118,14 +120,14 @@ def plusQntProduit(request):
     return redirect('panier')
 
 
-
+@login_required
 def confirmPanier(request):
     if request.method == 'POST':
         panier = request.session.get('panier', {})
         produits = Produit.objects.filter(pk__in=panier.keys())
         total_price = produits.aggregate(total=Sum('prix'))['total'] or 0
         
-        commande = Commande.objects.create(totalCde=total_price)
+        commande = Commande.objects.create(totalCde=total_price , user = request.user)
         for produit in produits:
             quantite = panier[str(produit.id)]
 
@@ -146,6 +148,49 @@ def confirmPanier(request):
     return redirect('/magasin')
 
 
+@login_required
+def compte(request):
+    if request.method == 'POST':
+        form = UserUpdateForm(request.POST, instance=request.user)
+        if form.is_valid():
+            form.save()
+            return redirect('/')  
+    else:
+        form = UserUpdateForm(instance=request.user)
+
+    user = request.user
+    command_history = Commande.objects.filter(user=user)
+    context = {
+        'user': user,
+        'command_history': command_history,
+        'form': form ,
+    }
+    return render(request, 'compte.html', context)
+
+
+from django.db.models import Sum
+
+@login_required
+def stats(request):
+    total_benefit = Commande.objects.aggregate(total_benefit=Sum('totalCde'))['total_benefit'] or 0
+    orders = Commande.objects.all()
+
+    product_quantities = {}
+
+    for order in orders:
+        for product in order.produits.all():
+            if product not in product_quantities:
+                product_quantities[product] = 0
+            product_quantities[product] += 1
+
+    top3_products = sorted(product_quantities.items(), key=lambda x: x[1], reverse=True)[:3]
+
+    context = {
+        'total_benefit': total_benefit,
+        'top3_products': top3_products,
+        'orders': orders,
+    }
+    return render(request, 'stats.html', context)
 
 
 def removePanier(request):
@@ -173,7 +218,7 @@ def panier(request):
 
 #------------------------
 
-
+@login_required
 def AjouterProduit(request):
     if request.method == 'POST':
         libelle = request.POST.get('libelle')
@@ -200,7 +245,7 @@ def AjouterProduit(request):
     
     return redirect('listProduit')
 
-
+@login_required
 def searchProduit(request):
     if request.method == 'POST':
         search_query = request.POST.get('search_query')
@@ -228,7 +273,7 @@ def listProduit(request):
     produits = Produit.objects.all()
     return render(request, 'listProduit.html', {'fournisseurs': fournisseur , 'produits' : produits , 'categories' :categorie})  
 
-
+@login_required
 def deleteProduit(request):
     if request.method == 'POST':
         id = request.POST.get('id')
@@ -236,7 +281,7 @@ def deleteProduit(request):
         produit.delete()
         return redirect('listProduit')  
     return redirect('listProduit')  
-
+@login_required
 def deleteFournisseur(request):
     if request.method == 'POST':
         id = request.POST.get('id')
@@ -245,7 +290,7 @@ def deleteFournisseur(request):
         return redirect('AjouterFournisseur')  
     return redirect('AjouterFournisseur')  
 
-
+@login_required
 def ProduitEdit(request):
     if request.method == 'POST':
         produit_id = request.POST.get('id')
@@ -265,7 +310,7 @@ def ProduitEdit(request):
     else:
         return redirect('listProduit')
 
-
+@login_required
 def FournisseurEdit(request):
     if request.method == 'POST':
         fournisseur_id = request.POST.get('id')
@@ -281,8 +326,9 @@ def FournisseurEdit(request):
         
         return redirect('AjouterFournisseur')  
     return redirect('AjouterFournisseur') 
-
+@login_required
 def editProduit(request):
+
     produit = None
     if request.method == 'POST':
         id = request.POST.get('id')
@@ -290,7 +336,7 @@ def editProduit(request):
     fournisseur = Fournisseur.objects.all() 
     categorie = Categorie.objects.all() 
     return render(request, 'editProduit.html', {'produit': produit , 'fournisseurs': fournisseur  , 'categories' :categorie})
-
+@login_required
 def editFournisseur(request):
     fournisseur = None
     if request.method == 'POST':
@@ -302,7 +348,7 @@ def editFournisseur(request):
     return render(request, 'editFournisseur.html', {'fournisseur': fournisseur})
 
 
-
+@login_required
 def AjouterFournisseur(request):
     fournisseurs = Fournisseur.objects.all()
     if request.method == 'POST':
@@ -323,7 +369,7 @@ def AjouterFournisseur(request):
         
         return render(request, 'AjouterFournisseur.html', {'fournisseurs': fournisseurs})
 
-
+@login_required
 def searchFournisseur(request):
     if request.method == 'POST':
         search_query = request.POST.get('search_query', '').strip()

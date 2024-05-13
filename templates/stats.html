@@ -1,0 +1,73 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Statistiques{% endblock title %}
+
+{% block styles %}
+<style>
+
+</style>
+{% endblock styles %}
+
+{% block content %}
+<br><br>
+<center>
+<div class="container" style="background-color: beige; width: 80%; border-radius: 20px;">
+   <hr>
+    <h1>Statistiques</h1>
+<br><hr><br>
+    <div class="row">
+        <div class="col-md-6">
+            <h2>Bénéfice Total : {{ total_benefit }} DT</h2>
+        </div>
+    </div>
+<hr>
+    <div class="row">
+        <div class="col-md-6">
+            <h3>Top 3 des Produits les Plus Vendus :</h3>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Produit</th>
+                        <th>Quantité Totale Vendue</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for product, quantity_sold in top3_products %}
+                    <tr>
+                        <td>{{ product.libelle }}</td>
+                        <td>{{ quantity_sold }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+<br><hr><br>
+    <div class="row">
+        <div class="col-md-12">
+            <h2>Liste des Commandes :</h2>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Total</th>
+                        <th>Utilisateur</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for order in orders %}
+                    <tr>
+                        <td>{{ order.dateCde }}</td>
+                        <td>{{ order.totalCde }}</td>
+                        <td>{{ order.user }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <hr>
+</div>
+</center>
+{% endblock %}

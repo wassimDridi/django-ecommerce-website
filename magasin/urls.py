@@ -24,6 +24,11 @@ urlpatterns = [
 
 
 
+    path('compte/',views.compte, name = 'compte'),
+    path('stats',views.stats, name = 'stats'),
+
+
+
     path('ajouterPanier',views.ajouterPanier, name = 'ajouterPanier'),
     path('panier',views.panier, name = 'panier'),
     path('panier',views.panier, name = 'removePanier'),
